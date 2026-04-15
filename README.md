@@ -128,6 +128,19 @@ Le tick peut donc arriver en retard, même si le délai demandé est de 1 second
 3. Sans store global, `App` partage les données avec des props et des callbacks.
 4. C’est fragile parce que `App` grossit vite et doit faire passer beaucoup de props.
 
+## TP 9 — Store global
+
+Le store global utilise Zustand dans `src/state/useGameStore.js`.
+
+Flux :
+
+```txt
+View -> Action Zustand -> Store -> render(View)
+```
+
+Le state initial et les actions du jeu sont dans `src/state/useGameStore.js`.
+Le tick global est créé dans `src/components/GameTick.jsx`, monté dans `Layout`, donc il reste actif sur toutes les pages.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)

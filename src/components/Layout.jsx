@@ -6,6 +6,9 @@ import {
   GearSix,
   ShoppingCart,
 } from '@phosphor-icons/react'
+import { useGameStore } from '../state/useGameStore'
+import { formatNumber } from '../utils/formatNumber'
+import GameTick from './GameTick'
 import ThemeToggle from './ThemeToggle'
 
 const navItems = [
@@ -16,8 +19,13 @@ const navItems = [
 ]
 
 function Layout() {
+  const money = useGameStore((state) => state.money)
+  const incomePerSecond = useGameStore((state) => state.incomePerSecond)
+
   return (
     <div className="app-shell">
+      <GameTick />
+
       <header className="app-header">
         <NavLink className="brand" to="/" aria-label="Retour au jeu">
           <span className="brand-mark">ST</span>
@@ -43,6 +51,11 @@ function Layout() {
             </NavLink>
           ))}
         </nav>
+
+        <div className="global-stats" aria-label="Ressources globales">
+          <span>Money: ${formatNumber(money)}</span>
+          <span>Income/sec: ${formatNumber(incomePerSecond)}</span>
+        </div>
 
         <ThemeToggle />
       </header>

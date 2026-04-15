@@ -1,8 +1,14 @@
 import UpgradeCard from '../components/UpgradeCard'
+import { useGameStore } from '../state/useGameStore'
 import { formatNumber } from '../utils/formatNumber'
 import { getUpgradeCost } from '../utils/getUpgradeCost'
 
-function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
+function Shop() {
+  const money = useGameStore((state) => state.money)
+  const incomePerSecond = useGameStore((state) => state.incomePerSecond)
+  const upgrades = useGameStore((state) => state.upgrades)
+  const buyUpgrade = useGameStore((state) => state.buyUpgrade)
+
   return (
     <main className="shop-page">
       <header className="shop-header">
@@ -14,8 +20,6 @@ function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
           <span>Money: ${formatNumber(money)}</span>
           <span>Income/sec: ${formatNumber(incomePerSecond)}</span>
         </div>
-
-        {message ? <p className="shop-feedback">{message}</p> : null}
       </header>
 
       <section className="upgrade-list" aria-label="Liste des upgrades">
@@ -34,7 +38,7 @@ function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
               gain={upgrade.incomePerSecondGain}
               canBuy={canBuy}
               missingMoney={missingMoney}
-              onBuy={() => onBuyUpgrade(upgrade.id)}
+              onBuy={() => buyUpgrade(upgrade.id)}
             />
           )
         })}
