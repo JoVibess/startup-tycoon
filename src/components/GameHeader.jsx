@@ -1,7 +1,7 @@
 import IncomeDisplay from './IncomeDisplay'
 import MoneyDisplay from './MoneyDisplay'
 
-function GameHeader({ money, income }) {
+function GameHeader({ money, incomePerSecond }) {
   return (
     <header className="game-header">
       <div>
@@ -11,7 +11,7 @@ function GameHeader({ money, income }) {
 
       <div className="game-stats" aria-label="Statistiques de la partie">
         <MoneyDisplay money={money} />
-        <IncomeDisplay income={income} />
+        <IncomeDisplay incomePerSecond={incomePerSecond} />
       </div>
     </header>
   )

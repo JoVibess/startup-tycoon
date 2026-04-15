@@ -284,6 +284,42 @@ button {
   font-weight: 800;
 }
 
+.test-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.test-actions button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-bg);
+  color: var(--text);
+  font-weight: 800;
+  box-shadow: 3px 3px 0 var(--shadow);
+  transition:
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.test-actions button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.test-actions button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow);
+}
+
+.test-actions button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .app-footer {
   padding: 18px 24px;
   border-top: 2px solid var(--border);

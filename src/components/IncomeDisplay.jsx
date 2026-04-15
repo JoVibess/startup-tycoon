@@ -1,10 +1,10 @@
 import { formatNumber } from '../utils/formatNumber'
 
-function IncomeDisplay({ income }) {
+function IncomeDisplay({ incomePerSecond }) {
   return (
     <p className="income-display">
-      <span>Income:</span>
-      <strong>${formatNumber(income)} / sec</strong>
+      <span>Income/sec:</span>
+      <strong>${formatNumber(incomePerSecond)}</strong>
     </p>
   )
 }

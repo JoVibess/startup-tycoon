@@ -71,6 +71,56 @@ Le formatage des grands nombres est isolé dans `src/utils/formatNumber.js` :
 - `1200` devient `1.2K`
 - `1250000` devient `1.25M`
 
+## TP 7 — Tick 1s et revenu passif
+
+Le revenu passif est géré localement dans `src/pages/Game.jsx`, sans store global.
+
+L’interval est créé dans le `useEffect` du composant `Game`, dans le fichier `src/pages/Game.jsx` :
+
+```jsx
+useEffect(() => {
+  const tickId = setInterval(() => {
+    setMoney((currentMoney) => currentMoney + incomePerSecond)
+  }, 1000)
+
+  return () => {
+    clearInterval(tickId)
+  }
+}, [incomePerSecond])
+```
+
+L’interval est nettoyé dans la fonction de retour du `useEffect`, avec `clearInterval(tickId)`.
+
+Ce nettoyage se déclenche :
+
+- quand le composant `Game` est démonté, par exemple après une navigation vers une autre page
+- avant de recréer un nouvel interval si `incomePerSecond` change
+- pendant certains comportements de développement comme le hot reload ou le mode strict de React
+
+C’est important parce que sans nettoyage, plusieurs intervals pourraient rester actifs en même temps. Le jeu gagnerait alors de l’argent trop vite, même si un seul tick devrait exister. Nettoyer l’interval évite aussi les fuites mémoire et les mises à jour de state sur un composant qui n’est plus affiché.
+
+Les boutons temporaires de test dans `src/pages/Game.jsx` permettent de vérifier le tick sans passer par le Shop :
+
+- `+1 income/sec` augmente `incomePerSecond`
+- `Reset income/sec` remet `incomePerSecond` à `0`
+
+Pour prouver le bon fonctionnement du tick, un log temporaire a été placé dans la callback du `setInterval`, puis retiré :
+
+```jsx
+console.log('tick revenu passif')
+```
+
+Ce log doit apparaître exactement une fois par seconde dans la console. S’il apparaît deux ou trois fois par seconde, cela signifie que plusieurs intervals tournent en même temps.
+
+Un interval mal géré peut “accélérer le temps” du jeu parce que chaque interval actif exécute sa propre callback toutes les secondes. Par exemple, si trois intervals restent actifs après des navigations ou des rechargements à chaud, le jeu applique trois ticks par seconde au lieu d’un seul. Le revenu passif devient donc trois fois trop rapide. C’est pour cela que `clearInterval(tickId)` dans le cleanup du `useEffect` est indispensable.
+
+`setInterval` ne met pas directement le callback dans la Call stack.
+Le timer est géré par les Web APIs du navigateur.
+Quand le délai est écoulé, le callback est placé dans la macrotask queue.
+La Call stack doit être vide pour que l’Event Loop puisse envoyer ce callback dans la Call stack.
+Si le thread principal est occupé par du code long, la Call stack reste pleine.
+Le tick peut donc arriver en retard, même si le délai demandé est de 1 seconde.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
