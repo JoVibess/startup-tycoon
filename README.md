@@ -8,7 +8,7 @@ J’ai choisi **React** plutôt que **Vue** principalement pour sa **logique de 
 
 - Découper l’interface en **petits composants indépendants**, faciles à comprendre et à réutiliser  
 - **Isoler la logique et l’UI** dans une même unité (un composant = son état, ses événements, son rendu)  
-- Faciliter la maintenance et l’évolution du code grâce à cette granularité
+- Faciliter la maintenance et l’évolution du code grâce à cette structure.
 
 ## Organisation du dossier `src`
 
@@ -36,6 +36,13 @@ Pour que le projet reste clair et facile à faire évoluer, le code dans `src/` 
     On y stocke les **stores**, les **reducers**, les **actions** et éventuellement des hooks personnalisés (`useAuthStore`, `useCartStore`, etc.).
 
 Selon ton projet, certains dossiers peuvent ne pas exister ou porter un nom légèrement différent, mais l’idée est toujours de séparer clairement les responsabilités.
+
+## Compréhension du point d’entrée
+
+1. L’application est montée dans le DOM dans le fichier `src/main.jsx`.
+2. Le composant racine est `App`, importé depuis `src/App.jsx`.
+3. Le router est configuré dans `src/App.jsx`, avec `BrowserRouter`, `Routes` et `Route`.
+4. L’élément HTML qui sert de point d’ancrage est `<div id="root"></div>` dans le fichier `index.html`.
 
 ## Prérequis
 
@@ -70,7 +77,7 @@ pnpm dev
 yarn dev
 ```
 
-Puis ouvrir l’URL affichée dans le terminal (en général [http://localhost:5173](http://localhost:5173)).
+Puis ouvrir l’URL affichée dans le terminal.
 
 ## Build pour la production
 
