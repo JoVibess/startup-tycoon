@@ -173,6 +173,117 @@ button {
   font-weight: 800;
 }
 
+.game-page {
+  align-content: start;
+  justify-items: stretch;
+}
+
+.game-header {
+  display: grid;
+  justify-items: start;
+  gap: 24px;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: var(--muted-text);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.game-stats {
+  justify-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.money-display,
+.income-display {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--page-bg);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.money-display strong,
+.income-display strong {
+  color: var(--accent-text);
+  background: var(--accent);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.game-clicker {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  padding-top: 20px;
+}
+
+.game-clicker p {
+  text-align: center;
+}
+
+.click-button {
+  width: min(360px, 100%);
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  padding: 24px;
+  border: 3px solid var(--border);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: 8px 8px 0 var(--shadow);
+  font-weight: 900;
+  transition:
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.click-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 var(--shadow);
+}
+
+.click-button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+.click-button:focus-visible {
+  outline: 3px solid var(--link);
+  outline-offset: 4px;
+}
+
+.click-button img {
+  width: min(190px, 72%);
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.click-button span {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.click-button small {
+  color: var(--accent-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
 .app-footer {
   padding: 18px 24px;
   border-top: 2px solid var(--border);
@@ -231,5 +342,23 @@ button {
 
   .app-main h1 {
     font-size: 32px;
+  }
+
+  .game-header {
+    justify-items: stretch;
+  }
+
+  .game-stats {
+    justify-content: stretch;
+  }
+
+  .money-display,
+  .income-display {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .click-button {
+    min-height: 230px;
   }
 }

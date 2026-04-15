@@ -44,6 +44,33 @@ Selon ton projet, certains dossiers peuvent ne pas exister ou porter un nom lég
 3. Le router est configuré dans `src/App.jsx`, avec `BrowserRouter`, `Routes` et `Route`.
 4. L’élément HTML qui sert de point d’ancrage est `<div id="root"></div>` dans le fichier `index.html`.
 
+## TP 6 — Premier gameplay
+
+La page de jeu `/` est implémentée dans `src/pages/Game.jsx`. C’est le seul fichier qui contient le state local du gameplay pour ce TP :
+
+- `money`, initialisé à `0`
+- `clickValue`, initialisé à `1`
+
+Les composants sont séparés par responsabilité :
+
+- `src/components/MoneyDisplay.jsx` affiche uniquement l’argent reçu en prop avec le texte `Money: $X`.
+- `src/components/ClickButton.jsx` affiche le bouton `Développer` et déclenche la callback `onClick` quand le joueur clique.
+- `src/components/GameHeader.jsx` structure le titre, `MoneyDisplay` et `IncomeDisplay`.
+- `src/components/IncomeDisplay.jsx` sert de placeholder pour les revenus automatiques des prochains TP.
+
+Le flux d’événement est le suivant :
+
+1. Le joueur clique sur `ClickButton`.
+2. `ClickButton` appelle la callback `onClick` reçue en prop.
+3. Dans `src/pages/Game.jsx`, la fonction `handleDevelopClick` met à jour `money` avec `setMoney`.
+4. React re-render la page et `MoneyDisplay` reçoit la nouvelle valeur via sa prop `money`.
+
+Le formatage des grands nombres est isolé dans `src/utils/formatNumber.js` :
+
+- `999` reste `999`
+- `1200` devient `1.2K`
+- `1250000` devient `1.25M`
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
