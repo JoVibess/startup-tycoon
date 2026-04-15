@@ -320,6 +320,84 @@ button {
   outline-offset: 2px;
 }
 
+.shop-page {
+  align-content: start;
+  justify-items: stretch;
+}
+
+.shop-header {
+  display: grid;
+  gap: 8px;
+}
+
+.upgrade-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding-top: 16px;
+}
+
+.upgrade-card {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--page-bg);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.upgrade-card h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.upgrade-details {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.upgrade-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.upgrade-details dt {
+  color: var(--muted-text);
+  font-weight: 800;
+}
+
+.upgrade-details dd {
+  margin: 0;
+  font-weight: 900;
+}
+
+.upgrade-card button {
+  min-height: 44px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 900;
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+@media (max-width: 768px) {
+  .upgrade-list {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .upgrade-card {
+    width: 100%;
+  }
+}
+
 .app-footer {
   padding: 18px 24px;
   border-top: 2px solid var(--border);
