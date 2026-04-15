@@ -1,3 +1,4 @@
+import UpgradeCard from '../components/UpgradeCard'
 import { formatNumber } from '../utils/formatNumber'
 import { getUpgradeCost } from '../utils/getUpgradeCost'
 
@@ -24,50 +25,17 @@ function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
           const missingMoney = currentCost - money
 
           return (
-            <article
-              className={
-                canBuy
-                  ? 'upgrade-card upgrade-card-affordable'
-                  : 'upgrade-card upgrade-card-locked'
-              }
+            <UpgradeCard
               key={upgrade.id}
-            >
-              <div>
-                <h2>{upgrade.name}</h2>
-                <p>{upgrade.description}</p>
-              </div>
-
-              <dl className="upgrade-details">
-                <div>
-                  <dt>Possede</dt>
-                  <dd>{upgrade.count}</dd>
-                </div>
-                <div>
-                  <dt>Cout actuel</dt>
-                  <dd>${formatNumber(currentCost)}</dd>
-                </div>
-                <div>
-                  <dt>Gain</dt>
-                  <dd>+${formatNumber(upgrade.incomePerSecondGain)}/sec</dd>
-                </div>
-              </dl>
-
-              <button
-                type="button"
-                disabled={!canBuy}
-                onClick={() => onBuyUpgrade(upgrade.id)}
-              >
-                {canBuy
-                  ? `Acheter - $${formatNumber(currentCost)}`
-                  : 'Fonds insuffisants'}
-              </button>
-
-              {!canBuy ? (
-                <p className="upgrade-warning">
-                  Il manque ${formatNumber(missingMoney)}
-                </p>
-              ) : null}
-            </article>
+              name={upgrade.name}
+              description={upgrade.description}
+              count={upgrade.count}
+              cost={currentCost}
+              gain={upgrade.incomePerSecondGain}
+              canBuy={canBuy}
+              missingMoney={missingMoney}
+              onBuy={() => onBuyUpgrade(upgrade.id)}
+            />
           )
         })}
       </section>
