@@ -1,33 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import ClickButton from '../components/ClickButton'
 import GameHeader from '../components/GameHeader'
 
-function Game() {
-  const [money, setMoney] = useState(0)
-  const [clickValue] = useState(1)
-  const [incomePerSecond, setIncomePerSecond] = useState(0)
-
+function Game({
+  money,
+  clickValue,
+  incomePerSecond,
+  onDevelopClick,
+  onPassiveIncomeTick,
+  onAddIncomePerSecond,
+  onResetIncomePerSecond,
+}) {
   useEffect(() => {
     const tickId = setInterval(() => {
-      setMoney((currentMoney) => currentMoney + incomePerSecond)
+      onPassiveIncomeTick()
     }, 1000)
 
     return () => {
       clearInterval(tickId)
     }
-  }, [incomePerSecond])
-
-  function handleDevelopClick() {
-    setMoney((currentMoney) => currentMoney + clickValue)
-  }
-
-  function handleAddIncomePerSecond() {
-    setIncomePerSecond((currentIncome) => currentIncome + 1)
-  }
-
-  function handleResetIncomePerSecond() {
-    setIncomePerSecond(0)
-  }
+  }, [onPassiveIncomeTick])
 
   return (
     <main className="game-page">
@@ -38,13 +30,13 @@ function Game() {
           Clique pour développer ta startup.
         </p>
 
-        <ClickButton clickValue={clickValue} onClick={handleDevelopClick} />
+        <ClickButton clickValue={clickValue} onClick={onDevelopClick} />
 
         <div className="test-actions" aria-label="Tests du revenu passif">
-          <button type="button" onClick={handleAddIncomePerSecond}>
+          <button type="button" onClick={onAddIncomePerSecond}>
             +1 income/sec
           </button>
-          <button type="button" onClick={handleResetIncomePerSecond}>
+          <button type="button" onClick={onResetIncomePerSecond}>
             Reset income/sec
           </button>
         </div>

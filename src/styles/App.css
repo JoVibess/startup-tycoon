@@ -330,6 +330,29 @@ button {
   gap: 8px;
 }
 
+.shop-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.shop-stats span,
+.shop-feedback,
+.upgrade-warning {
+  width: fit-content;
+  padding: 6px 10px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--page-bg);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.shop-feedback {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
 .upgrade-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -385,6 +408,16 @@ button {
   color: var(--accent-text);
   font-weight: 900;
   box-shadow: 3px 3px 0 var(--shadow);
+}
+
+.upgrade-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.upgrade-warning {
+  color: var(--muted-text);
 }
 
 @media (max-width: 768px) {
