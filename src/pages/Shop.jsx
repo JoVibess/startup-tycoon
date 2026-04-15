@@ -21,9 +21,17 @@ function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
         {upgrades.map((upgrade) => {
           const currentCost = getUpgradeCost(upgrade.baseCost, upgrade.count)
           const canBuy = money >= currentCost
+          const missingMoney = currentCost - money
 
           return (
-            <article className="upgrade-card" key={upgrade.id}>
+            <article
+              className={
+                canBuy
+                  ? 'upgrade-card upgrade-card-affordable'
+                  : 'upgrade-card upgrade-card-locked'
+              }
+              key={upgrade.id}
+            >
               <div>
                 <h2>{upgrade.name}</h2>
                 <p>{upgrade.description}</p>
@@ -49,11 +57,15 @@ function Shop({ money, incomePerSecond, upgrades, message, onBuyUpgrade }) {
                 disabled={!canBuy}
                 onClick={() => onBuyUpgrade(upgrade.id)}
               >
-                Acheter
+                {canBuy
+                  ? `Acheter - $${formatNumber(currentCost)}`
+                  : 'Fonds insuffisants'}
               </button>
 
               {!canBuy ? (
-                <p className="upgrade-warning">Fonds insuffisants</p>
+                <p className="upgrade-warning">
+                  Il manque ${formatNumber(missingMoney)}
+                </p>
               ) : null}
             </article>
           )

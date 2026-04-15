@@ -348,6 +348,11 @@ button {
   font-weight: 800;
 }
 
+.shop-stats span {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
 .shop-feedback {
   background: var(--accent);
   color: var(--accent-text);
@@ -368,6 +373,15 @@ button {
   border-radius: 8px;
   background: var(--page-bg);
   box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.upgrade-card-affordable {
+  outline: 3px solid var(--accent);
+  outline-offset: 0;
+}
+
+.upgrade-card-locked {
+  opacity: 0.72;
 }
 
 .upgrade-card h2 {
@@ -413,11 +427,14 @@ button {
 .upgrade-card button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+  background: var(--panel-bg);
+  color: var(--muted-text);
   box-shadow: none;
 }
 
 .upgrade-warning {
   color: var(--muted-text);
+  background: var(--panel-bg);
 }
 
 @media (max-width: 768px) {
