@@ -121,6 +121,13 @@ La Call stack doit être vide pour que l’Event Loop puisse envoyer ce callback
 Si le thread principal est occupé par du code long, la Call stack reste pleine.
 Le tick peut donc arriver en retard, même si le délai demandé est de 1 seconde.
 
+## TP 8 — State partagé
+
+1. `money` et `incomePerSecond` vivent dans `src/App.jsx`.
+2. Oui, `Game` et `Shop` ont besoin des mêmes données.
+3. Sans store global, `App` partage les données avec des props et des callbacks.
+4. C’est fragile parce que `App` grossit vite et doit faire passer beaucoup de props.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
