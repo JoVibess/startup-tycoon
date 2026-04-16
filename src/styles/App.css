@@ -457,6 +457,73 @@ button {
   background: var(--panel-bg);
 }
 
+.settings-page {
+  align-content: start;
+  justify-items: stretch;
+}
+
+.settings-section {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--page-bg);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.settings-section h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.settings-last-saved {
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 800;
+}
+
+.settings-last-saved strong {
+  color: inherit;
+}
+
+.settings-danger-button {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 900;
+  box-shadow: 3px 3px 0 var(--shadow);
+  transition:
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.settings-danger-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.settings-danger-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow);
+}
+
+.settings-danger-button:focus-visible {
+  outline: 3px solid var(--link);
+  outline-offset: 3px;
+}
+
 @media (max-width: 768px) {
   .upgrade-list {
     width: 100%;

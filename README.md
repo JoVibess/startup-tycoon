@@ -141,6 +141,48 @@ View -> Action Zustand -> Store -> render(View)
 Le state initial et les actions du jeu sont dans `src/state/useGameStore.js`.
 Le tick global est créé dans `src/components/GameTick.jsx`, monté dans `Layout`, donc il reste actif sur toutes les pages.
 
+## TP 10 — Format de sauvegarde
+
+La clé `localStorage` prévue pour la sauvegarde est `startup-tycoon-save`.
+
+Le format est défini dans `src/services/gameSave.js` :
+
+```json
+{
+  "version": 1,
+  "savedAt": 1700000000000,
+  "state": {
+    "money": 120,
+    "incomePerSecond": 4,
+    "clickValue": 1,
+    "upgrades": [],
+    "totalClicks": 42,
+    "totalEarned": 999
+  }
+}
+```
+
+Au démarrage, le store dans `src/state/useGameStore.js` appelle `loadGameSave`.
+Si aucune sauvegarde n’existe, le state par défaut est utilisé.
+Si la sauvegarde existe, le JSON, la version `1` et les types du state sont vérifiés.
+Si la sauvegarde est invalide ou corrompue, elle est ignorée et le jeu repart de zéro sans crash.
+
+La sauvegarde est centralisée dans `src/services/gameSave.js` avec `saveGameState`.
+Elle est lancée immédiatement après un achat réussi et après un reset.
+Un autosave dans `src/components/GameAutoSave.jsx` sauvegarde aussi toutes les 5 secondes.
+On évite donc d’écrire dans `localStorage` à chaque tick.
+
+La page `Settings` contient un bouton `Reset Save`.
+Après confirmation, il remet le store à zéro et supprime la clé `startup-tycoon-save` du `localStorage`.
+Elle affiche aussi la date de dernière sauvegarde à partir de `savedAt`.
+
+Analyse :
+
+1. Sauvegarder à chaque tick spammerait `localStorage` et pourrait ralentir le jeu.
+2. Si le JSON est corrompu, il est ignoré et le jeu repart avec le state par défaut.
+3. `version` permet de savoir si une ancienne sauvegarde est compatible avec le code actuel.
+4. On sauvegarde le state global du jeu : argent, revenus, upgrades et stats, car ce sont les données de progression.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)

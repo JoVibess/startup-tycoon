@@ -1,7 +1,11 @@
 import { create } from 'zustand'
 import { initialUpgrades } from '../data/upgrades'
-import { persist } from 'zustand/middleware'
 import { getUpgradeCost } from '../utils/getUpgradeCost'
+import {
+  deleteGameSave,
+  loadGameSave,
+  saveGameState,
+} from '../services/gameSave'
 
 function createInitialState() {
   return {
@@ -14,64 +18,64 @@ function createInitialState() {
   }
 }
 
-export const useGameStore = create(
-  persist(
-    (set) => ({
-      ...createInitialState(),
+export const useGameStore = create((set, get) => ({
+  ...loadGameSave(createInitialState()),
 
-      click() {
-        set((state) => ({
-          money: state.money + state.clickValue,
-          totalClicks: state.totalClicks + 1,
-          totalEarned: state.totalEarned + state.clickValue,
-        }))
-      },
+  click() {
+    set((state) => ({
+      money: state.money + state.clickValue,
+      totalClicks: state.totalClicks + 1,
+      totalEarned: state.totalEarned + state.clickValue,
+    }))
+  },
 
-      tick() {
-        set((state) => ({
-          money: state.money + state.incomePerSecond,
-          totalEarned: state.totalEarned + state.incomePerSecond,
-        }))
-      },
+  tick() {
+    set((state) => ({
+      money: state.money + state.incomePerSecond,
+      totalEarned: state.totalEarned + state.incomePerSecond,
+    }))
+  },
 
-      buyUpgrade(upgradeId) {
-        set((state) => {
-          const upgradeToBuy = state.upgrades.find(
-            (upgrade) => upgrade.id === upgradeId,
-          )
+  buyUpgrade(upgradeId) {
+    const state = get()
+    const upgradeToBuy = state.upgrades.find(
+      (upgrade) => upgrade.id === upgradeId,
+    )
 
-          if (!upgradeToBuy) {
-            return state
-          }
+    if (!upgradeToBuy) {
+      return
+    }
 
-          const currentCost = getUpgradeCost(
-            upgradeToBuy.baseCost,
-            upgradeToBuy.count,
-          )
+    const currentCost = getUpgradeCost(
+      upgradeToBuy.baseCost,
+      upgradeToBuy.count,
+    )
 
-          if (state.money < currentCost) {
-            return state
-          }
+    if (state.money < currentCost) {
+      return
+    }
 
-          return {
-            money: state.money - currentCost,
-            incomePerSecond:
-              state.incomePerSecond + upgradeToBuy.incomePerSecondGain,
-            upgrades: state.upgrades.map((upgrade) =>
-              upgrade.id === upgradeId
-                ? { ...upgrade, count: upgrade.count + 1 }
-                : upgrade,
-            ),
-          }
-        })
-      },
+    set({
+      money: state.money - currentCost,
+      incomePerSecond:
+        state.incomePerSecond + upgradeToBuy.incomePerSecondGain,
+      upgrades: state.upgrades.map((upgrade) =>
+        upgrade.id === upgradeId
+          ? { ...upgrade, count: upgrade.count + 1 }
+          : upgrade,
+      ),
+    })
 
-      resetGame() {
-        set(createInitialState())
-      },
-    }),
-    {
-      name: 'game-store',
-    },
-  ),
-)
+    saveGameState(get())
+  },
+
+  resetGame() {
+    set(createInitialState())
+    saveGameState(get())
+  },
+
+  resetSave() {
+    set(createInitialState())
+    deleteGameSave()
+  },
+}))

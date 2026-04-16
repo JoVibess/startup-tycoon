@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react'
 import { useGameStore } from '../state/useGameStore'
 import { formatNumber } from '../utils/formatNumber'
+import GameAutoSave from './GameAutoSave'
 import GameTick from './GameTick'
 import ThemeToggle from './ThemeToggle'
 
@@ -25,6 +26,7 @@ function Layout() {
   return (
     <div className="app-shell">
       <GameTick />
+      <GameAutoSave />
 
       <header className="app-header">
         <NavLink className="brand" to="/" aria-label="Retour au jeu">
