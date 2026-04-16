@@ -7,7 +7,7 @@ function GameTick() {
   useEffect(() => {
     const tickId = setInterval(() => {
       tick()
-    }, 1000)
+    }, 10)
 
     return () => {
       clearInterval(tickId)
