@@ -1,6 +1,8 @@
+import { memo, useCallback } from 'react'
 import { formatNumber } from '../utils/formatNumber'
 
 function UpgradeCard({
+  id,
   name,
   description,
   count,
@@ -10,6 +12,10 @@ function UpgradeCard({
   missingMoney,
   onBuy,
 }) {
+  const handleBuy = useCallback(() => {
+    onBuy(id)
+  }, [id, onBuy])
+
   return (
     <article
       className={
@@ -38,7 +44,7 @@ function UpgradeCard({
         </div>
       </dl>
 
-      <button type="button" disabled={!canBuy} onClick={onBuy}>
+      <button type="button" disabled={!canBuy} onClick={handleBuy}>
         {canBuy ? `Acheter - $${formatNumber(cost)}` : 'Fonds insuffisants'}
       </button>
 
@@ -49,4 +55,4 @@ function UpgradeCard({
   )
 }
 
-export default UpgradeCard
+export default memo(UpgradeCard)

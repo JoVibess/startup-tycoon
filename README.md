@@ -183,6 +183,65 @@ Analyse :
 3. `version` permet de savoir si une ancienne sauvegarde est compatible avec le code actuel.
 4. On sauvegarde le state global du jeu : argent, revenus, upgrades et stats, car ce sont les données de progression.
 
+## TP 11 — Mesure initiale
+
+Baseline Lighthouse en mode Navigation sur `/` :
+
+- Performance : 32
+- Accessibility : 100
+- Best Practices : 81
+- SEO : 82
+- First Contentful Paint : 3.7 s
+- Largest Contentful Paint : 7.7 s
+- Total Blocking Time : 590 ms
+- Cumulative Layout Shift : 0.001
+- Speed Index : 7.6 s
+
+Baseline Lighthouse en mode Navigation sur `/shop` :
+
+- Performance : 33
+- Accessibility : 100
+- Best Practices : 81
+- SEO : 82
+- First Contentful Paint : 3.7 s
+- Largest Contentful Paint : 7.0 s
+- Total Blocking Time : 590 ms
+- Cumulative Layout Shift : 0.001
+- Speed Index : 4.3 s
+
+Performance tab sur `/shop` pendant environ 10 secondes :
+
+- Tick actif pendant l’enregistrement.
+- Range : 0 ms -> 10.06 s
+- Scripting : 2571 ms
+- System : 363 ms
+- Painting : 30 ms
+- Rendering : 29 ms
+- CLS : 0.00
+- Beaucoup d’activité JS régulière est visible sur le main thread.
+- Pas de gros coût côté rendering/painting par rapport au scripting.
+
+Constat avec instrumentation temporaire des re-renders :
+
+- `Layout`, `Shop` et les `UpgradeCard` re-render pendant le tick.
+- Cela confirme que le tick du state global provoque des re-renders à optimiser.
+- Les logs temporaires ont été retirés après observation.
+
+Optimisation des re-renders du Shop :
+
+- `Shop` ne lit plus directement `money`.
+- Les stats du shop sont isolées dans `ShopStats`.
+- La liste des upgrades est isolée dans `UpgradeList`.
+- `UpgradeCard` utilise `memo` et reçoit une action stable.
+- Les cartes déjà achetables gardent des props stables pendant le tick, donc elles évitent des re-renders inutiles.
+- Le tick a été remis à `1000 ms`, car le jeu doit tourner à 1 tick par seconde.
+
+Optimisation du header :
+
+- `Layout` ne lit plus directement le state global du jeu.
+- Les stats globales sont isolées dans `GlobalStats`.
+- Le logo, la navigation et le bouton de theme ne sont plus re-render à chaque tick.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
