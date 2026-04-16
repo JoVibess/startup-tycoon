@@ -221,6 +221,28 @@ Performance tab sur `/shop` pendant environ 10 secondes :
 - Beaucoup d’activité JS régulière est visible sur le main thread.
 - Pas de gros coût côté rendering/painting par rapport au scripting.
 
+Nouveau test Performance tab sur `/` :
+
+- Range : environ 21.08 s
+- Scripting estimé : 209 ms
+- Rendering estimé : 4 ms
+- Painting estimé : 8 ms
+- `RunTask` total : 447 ms
+- Long task max : 69.7 ms
+- Le coût rendering/painting est très faible.
+- Le coût JS est beaucoup plus faible que sur la première mesure `/shop`.
+
+Nouveau test Performance tab sur `/shop` :
+
+- Range : environ 5.94 s
+- Scripting estimé : 132 ms
+- Rendering estimé : 1.5 ms
+- Painting estimé : 2.6 ms
+- `RunTask` total : 188 ms
+- Long task max : 71.8 ms
+- Le coût rendering/painting est très faible.
+- La page `/shop` est plus légère après isolation des composants et debounce de la recherche.
+
 Constat avec instrumentation temporaire des re-renders :
 
 - `Layout`, `Shop` et les `UpgradeCard` re-render pendant le tick.
@@ -248,6 +270,63 @@ Recherche d'upgrades avec debounce :
 - Le champ met à jour `searchTerm` à chaque frappe.
 - Le filtre utilise une valeur debouncée de `300 ms`.
 - Résultat : le filtrage ne se relance pas à chaque touche, mais après une courte pause.
+
+Lazy loading / code splitting :
+
+- Les pages `/shop` et `/stats` sont chargées avec `React.lazy`.
+- `Suspense` affiche un court chargement si le chunk n’est pas encore prêt.
+- Dans Network, les chunks de ces pages doivent apparaître seulement quand on visite leur route.
+- Preuve sur `/` : `src/assets/tp11-partie5-page-game.png`.
+- Preuve sur `/shop` : `src/assets/tp11-partie5-page-shop.png`.
+
+Nouveau test Lighthouse sur `/` :
+
+- Performance : `38`
+- Accessibility : `100`
+- Best Practices : `100`
+- SEO : `82`
+- First Contentful Paint : `3.7 s`
+- Largest Contentful Paint : `7.1 s`
+- Total Blocking Time : `410 ms`
+- Cumulative Layout Shift : `0.059`
+- Speed Index : `4.2 s`
+- Le score progresse, mais le LCP reste élevé.
+
+Nouveau test Lighthouse sur `/shop` :
+
+- Performance : `38`
+- Accessibility : `100`
+- Best Practices : `100`
+- SEO : `82`
+- First Contentful Paint : `3.7 s`
+- Largest Contentful Paint : `7.1 s`
+- Total Blocking Time : `410 ms`
+- Cumulative Layout Shift : `0.035`
+- Speed Index : `4.3 s`
+- Capture : `src/assets/tp11-lighthouse-partie-6-shop.png`.
+
+Rapport d'optimisation React Profiler :
+
+- Montage initial : `9.6 ms`.
+- Update mesuré : `2.3 ms`.
+- Composants touchés pendant l'update : `Game`, `GameHeader`, `GlobalStats`, `MoneyDisplay`, `IncomeDisplay`, `ClickButton`.
+- Les composants les plus coûteux pendant l'update sont `Game` (`2.3 ms`), `GameHeader` (`1.4 ms`) et `GlobalStats` (`1 ms`).
+- Le coût React est faible : le problème Lighthouse vient plutôt du TBT, du LCP et des ressources chargées.
+
+Priorités d'optimisation :
+
+1. Optimiser l'image principale `logo-auto-clicker.png`, car elle est lourde.
+2. Eviter les re-renders inutiles dans `Game` avec `memo` sur les composants d'affichage stables.
+3. Mesurer en build de production, sans extensions Chrome, pour avoir un Lighthouse plus fiable.
+4. Garder le lazy loading, même si le gain actuel est faible, car il sera utile si `/shop` ou `/stats` grossissent.
+
+Analyse critique :
+
+1. Avant optimisation, `Shop`, `Layout` et les `UpgradeCard` re-renderaient inutilement au tick.
+2. L'isolation des composants et le debounce ont eu l'impact le plus visible dans Performance tab.
+3. L'optimisation la plus rentable est d'isoler les composants qui lisent le store.
+4. Le tick révèle vite les problèmes, car il modifie le state régulièrement.
+5. Je n'ai pas fait d'optimisations complexes, car les mesures montrent déjà un coût React faible.
 
 ## Prérequis
 

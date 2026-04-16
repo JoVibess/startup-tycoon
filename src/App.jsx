@@ -1,10 +1,26 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Game from './pages/Game'
-import Shop from './pages/Shop'
-import Stats from './pages/Stats'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
+
+const Shop = lazy(() => import('./pages/Shop'))
+const Stats = lazy(() => import('./pages/Stats'))
+
+function PageLoader({ children }) {
+  return (
+    <Suspense
+      fallback={
+        <main>
+          <p>Chargement...</p>
+        </main>
+      }
+    >
+      {children}
+    </Suspense>
+  )
+}
 
 function App() {
   return (
@@ -12,8 +28,22 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Game />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/stats" element={<Stats />} />
+          <Route
+            path="/shop"
+            element={
+              <PageLoader>
+                <Shop />
+              </PageLoader>
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <PageLoader>
+                <Stats />
+              </PageLoader>
+            }
+          />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Route>

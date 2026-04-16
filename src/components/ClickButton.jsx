@@ -1,4 +1,4 @@
-import clickerLogo from '../assets/logo-auto-clicker.png'
+import clickerLogo from '../assets/logo-auto-clicker.webp'
 import { formatNumber } from '../utils/formatNumber'
 
 function ClickButton({ clickValue, onClick }) {
