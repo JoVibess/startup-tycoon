@@ -242,6 +242,13 @@ Optimisation du header :
 - Les stats globales sont isolées dans `GlobalStats`.
 - Le logo, la navigation et le bouton de theme ne sont plus re-render à chaque tick.
 
+Recherche d'upgrades avec debounce :
+
+- La recherche est disponible sur `/shop`.
+- Le champ met à jour `searchTerm` à chaque frappe.
+- Le filtre utilise une valeur debouncée de `300 ms`.
+- Résultat : le filtrage ne se relance pas à chaque touche, mais après une courte pause.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
