@@ -328,6 +328,31 @@ Analyse critique :
 4. Le tick révèle vite les problèmes, car il modifie le state régulièrement.
 5. Je n'ai pas fait d'optimisations complexes, car les mesures montrent déjà un coût React faible.
 
+## TP 12 - SSR / SSG
+
+Hydration :
+
+1. Le HTML est visible avant le JS, car Next envoie deja une page HTML remplie.
+2. L'hydration sert a relier ce HTML avec React pour rendre la page interactive.
+3. SSR ne veut pas dire "sans JS" : le HTML arrive d'abord, puis le JS hydrate la page.
+
+Comparaison CSR vs SSR / SSG :
+
+- `/stats` (CSR) Lighthouse : `33`
+- `/public-stats` (SSR/SSG) Lighthouse : `89`
+
+Analyse simple :
+
+1. Pour le SEO, `/public-stats` est meilleur car le contenu est deja present dans le HTML initial.
+2. Pour FCP/LCP, `/public-stats` est meilleur car la page est deja rendue avant le chargement complet du JS.
+3. Le cout cote serveur, c'est qu'il faut generer la page et maintenir un projet Next en plus.
+
+Choix technique :
+
+- Framework : `Next.js`
+- Strategie de donnees : fichier JSON mock `public-stats.json`
+- Projet separe : `startup-tycoon-public`
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
