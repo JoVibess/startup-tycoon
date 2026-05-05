@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Game from './pages/Game'
+import Leaderboard from './pages/Leaderboard'
 import Settings from './pages/Settings'
 import SignInPage from './pages/SignInPage'
 import NotFound from './pages/NotFound'
@@ -39,6 +40,7 @@ function App() {
               </PageLoader>
             }
           />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route element={<ProtectedRoute />}>
             <Route
               path="/stats"

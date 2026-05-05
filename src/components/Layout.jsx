@@ -4,6 +4,7 @@ import {
   ChartLineUp,
   GameController,
   GearSix,
+  Ranking,
   ShoppingCart,
 } from '@phosphor-icons/react'
 import GameAutoSave from './GameAutoSave'
@@ -15,6 +16,7 @@ import ThemeToggle from './ThemeToggle'
 const navItems = [
   { to: '/', label: 'Game', icon: GameController },
   { to: '/shop', label: 'Shop', icon: ShoppingCart },
+  { to: '/leaderboard', label: 'Leaderboard', icon: Ranking },
   { to: '/stats', label: 'Stats', icon: ChartLineUp },
   { to: '/settings', label: 'Settings', icon: GearSix },
 ]

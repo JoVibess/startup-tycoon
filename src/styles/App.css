@@ -678,6 +678,11 @@ button {
   margin: 10px 0 0;
 }
 
+.leaderboard-list {
+  display: grid;
+  gap: 12px;
+}
+
 @media (max-width: 768px) {
   .upgrade-list {
     width: 100%;
@@ -719,7 +724,7 @@ button {
 
   .main-nav {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 6px;
   }
 

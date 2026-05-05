@@ -1,5 +1,7 @@
 import { useAuth, useUser } from '@clerk/clerk-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useSubmitGame } from '../hooks/useSubmitGame'
+import { useMyGames } from '../hooks/useMyGames'
 import { decodeJwt, getTokenLifetimeSeconds } from '../lib/jwtDebug'
 
 function Stats() {
@@ -7,55 +9,8 @@ function Stats() {
   const { user } = useUser()
   const [tokenInfo, setTokenInfo] = useState(null)
   const [tokenError, setTokenError] = useState('')
-  const [games, setGames] = useState([])
-  const [gamesLoading, setGamesLoading] = useState(true)
-  const [gamesError, setGamesError] = useState('')
-
-  useEffect(() => {
-    let isMounted = true
-
-    async function loadMyGames() {
-      try {
-        setGamesLoading(true)
-        setGamesError('')
-
-        const token = await getToken()
-        if (!token) {
-          throw new Error('Token Clerk introuvable')
-        }
-
-        const response = await fetch('http://localhost:3000/api/games/me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`)
-        }
-
-        const data = await response.json()
-        if (isMounted) {
-          setGames(Array.isArray(data.games) ? data.games : [])
-        }
-      } catch (error) {
-        if (isMounted) {
-          setGamesError(error instanceof Error ? error.message : 'Erreur inconnue')
-        }
-      } finally {
-        if (isMounted) {
-          setGamesLoading(false)
-        }
-      }
-    }
-
-    loadMyGames()
-
-    return () => {
-      isMounted = false
-    }
-  }, [getToken])
+  const { data: games = [], isLoading: gamesLoading, error: gamesError } = useMyGames()
+  const submitGameMutation = useSubmitGame()
 
   async function inspectToken() {
     try {
@@ -80,6 +35,30 @@ function Stats() {
     }
   }
 
+  function submitTestGame() {
+    const score = Math.floor(Math.random() * 5000) + 1000
+    const displayName =
+      user?.fullName ||
+      user?.username ||
+      user?.primaryEmailAddress?.emailAddress ||
+      'Startup Tycoon Player'
+
+    submitGameMutation.mutate({
+      payload: {
+        mode: 'solo',
+        score,
+        duration: 300,
+        clicks: Math.max(10, Math.floor(score / 4)),
+        upgrades: Math.max(1, Math.floor(score / 100)),
+        displayName,
+      },
+      optimistic: {
+        userId: user?.id || 'unknown-user',
+        displayName,
+      },
+    })
+  }
+
   return (
     <main className="stats-page">
       <h1>Statistiques</h1>
@@ -90,8 +69,26 @@ function Stats() {
       <section className="auth-investigation" aria-label="Historique API">
         <h2>Historique API (/api/games/me)</h2>
         {gamesLoading ? <p>Chargement...</p> : null}
-        {gamesError ? <p className="auth-investigation-error">Erreur API: {gamesError}</p> : null}
+        {gamesError ? <p className="auth-investigation-error">Erreur API: {gamesError.message}</p> : null}
         {!gamesLoading && !gamesError ? <p>Parties recuperees: {games.length}</p> : null}
+
+        <div className="stats-actions">
+          <button
+            className="mode-button"
+            type="button"
+            onClick={submitTestGame}
+            disabled={submitGameMutation.isPending}
+          >
+            {submitGameMutation.isPending ? 'Envoi...' : 'Envoyer une partie test'}
+          </button>
+        </div>
+
+        {submitGameMutation.isSuccess ? <p className="auth-help">Partie test enregistree.</p> : null}
+        {submitGameMutation.error ? (
+          <p className="auth-investigation-error">
+            Echec envoi: {submitGameMutation.error.message}
+          </p>
+        ) : null}
       </section>
 
       <section className="auth-investigation" aria-label="Investigation Clerk TP13">

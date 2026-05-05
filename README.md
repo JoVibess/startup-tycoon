@@ -445,6 +445,94 @@ dans `req.auth.userId` (et les claims dans `req.auth.claims`).
 validation minimale de type uniquement (entier positif, bornes de duree), sans coherence gameplay (`score`, `duration`, `clicks`).
 Probleme : un client peut tricher et envoyer un score gonfle.
 
+### State client vs state serveur (TP13 Partie 3.3)
+
+1. Qu'est-ce qu'un state client ?
+Le state client est l'etat local de l'interface, gere par le front pendant la session.
+
+2. Qu'est-ce qu'un state serveur ?
+Le state serveur vient d'une API et peut etre partage entre utilisateurs.
+
+3. Pourquoi `useState + useEffect + fetch` est fragile pour les donnees serveur ?
+Parce qu'on doit tout gerer a la main : chargement, erreurs, cache, refetch, synchronisation entre pages.
+
+4. Trois problemes de l'approche naive :
+- pas de cache central fiable
+- pas de deduplication automatique des requetes
+- invalidation/refetch manuel apres mutation (risque de desynchronisation UI)
+
+Conclusion :
+TanStack Query est utile car il gere nativement le cache, le refetch, la deduplication et l'etat loading/error pour les donnees serveur.
+
+### Setup TanStack Query (TP13 Partie 3.4)
+
+- Installation React : `@tanstack/react-query`.
+- Setup racine dans `src/main.jsx` avec `QueryClientProvider`.
+- Valeurs par defaut configurees :
+`staleTime: 30_000` et `retry: 2`.
+
+### Client HTTP authentifie (TP13 Partie 3.5)
+
+Module cree : `src/lib/api.js`
+
+`apiFetch(path, options)` fait :
+
+1. Recupere le token Clerk via `window.Clerk.session.getToken()`.
+2. Ajoute automatiquement `Authorization: Bearer <token>` quand `auth=true`.
+3. Gere les erreurs HTTP :
+- `401` : redirection vers `/sign-in`
+- `4xx/5xx` : `throw Error(...)`
+
+Base URL :
+- `VITE_API_BASE_URL` si definie
+- sinon `http://localhost:3000`
+
+Usage actuel :
+- `/stats` appelle `/api/games/me` via `apiFetch`.
+
+### Queries et Mutation (TP13 Partie 3.6)
+
+Hooks crees :
+
+- `useLeaderboard()` :
+queryKey `['leaderboard']`, fetch `GET /api/leaderboard`, `staleTime: 10_000`.
+- `useMyGames()` :
+queryKey `['games','me']`, fetch `GET /api/games/me`.
+- `useSubmitGame()` :
+mutation `POST /api/games`, puis invalidation de `['leaderboard']` et `['games','me']`.
+
+Pages branchees :
+
+- `/leaderboard` (publique) : affiche le top all-time via `useLeaderboard`.
+- `/stats` (protegee) : charge l'historique personnel via `useMyGames`.
+
+### Optimistic update (TP13 Partie 3.7)
+
+Implementation :
+
+- `useSubmitGame()` utilise :
+`onMutate`, `onError`, `onSettled`.
+- `onMutate` :
+mise a jour immediate du cache `['games','me']` et `['leaderboard']`.
+- `onError` :
+rollback vers les snapshots precedents.
+- `onSettled` :
+invalidation `['games','me']` et `['leaderboard']` pour resynchroniser avec le serveur.
+
+Test manuel simple :
+
+1. Aller sur `/stats` (connecte).
+2. Ouvrir Network et filtrer `api/games`.
+3. Cliquer `Envoyer une partie test`.
+4. Observer :
+- l'UI se met a jour tout de suite (optimistic)
+- la requete `POST /api/games` apparait dans Network
+- puis la requete de refetch remet l'etat serveur final.
+5. Pour tester rollback :
+- arreter temporairement `startup-tycoon-api`
+- recliquer `Envoyer une partie test`
+- l'UI revient en arriere et affiche une erreur.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
