@@ -9,6 +9,7 @@ import {
 import GameAutoSave from './GameAutoSave'
 import GameTick from './GameTick'
 import GlobalStats from './GlobalStats'
+import AuthControls from './AuthControls'
 import ThemeToggle from './ThemeToggle'
 
 const navItems = [
@@ -57,6 +58,7 @@ const AppHeader = memo(function AppHeader() {
       <BrandLink />
       <MainNav />
       <GlobalStats />
+      <AuthControls />
       <ThemeToggle />
     </header>
   )

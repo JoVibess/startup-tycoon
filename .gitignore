@@ -16,6 +16,7 @@ startup-tycoon-public/.next
 startup-tycoon-public/node_modules
 startup-tycoon-public/.vercel
 startup-tycoon-public/out
+startup-tycoon-api/.env
 
 # Editor directories and files
 .vscode/*

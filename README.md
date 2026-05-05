@@ -353,6 +353,98 @@ Choix technique :
 - Strategie de donnees : fichier JSON mock `public-stats.json`
 - Projet separe : `startup-tycoon-public`
 
+## TP 13 - Backend/Auth (preuves curl)
+
+Tests realises sur `http://localhost:3000` :
+
+1. Sanity check backend
+
+```bash
+curl http://localhost:3000/health
+```
+
+Reponse :
+
+```json
+{"status":"ok","games":0,"uptime":15.098189417}
+```
+
+2. Endpoint public leaderboard
+
+```bash
+curl http://localhost:3000/api/leaderboard
+```
+
+Reponse :
+
+```json
+{"limit":20,"count":0,"entries":[]}
+```
+
+3. Endpoint protege sans token
+
+```bash
+curl -i http://localhost:3000/api/games/me
+```
+
+Reponse :
+
+```text
+HTTP/1.1 401 Unauthorized
+...
+{"error":"Missing Authorization header"}
+```
+
+Conclusion : l'API est bien accessible, le leaderboard est public, et `/api/games/me` est correctement protege par un header `Authorization: Bearer <token>`.
+
+### Anatomie de l'authentification Clerk (TP13 Partie 2)
+
+Cookies (DevTools > Application > Cookies) :
+
+1. Cookies Clerk observes : voir capture (`__session` inclus).
+2. Pour chaque cookie, relever : `HttpOnly`, `Secure`, `SameSite`, domaine, expiration.
+3. Role de `__session` : cookie de session qui represente l'etat connecte.
+4. `document.cookie` n'affiche pas les cookies `HttpOnly`, donc on ne peut pas les lire en JS.
+
+JWT (via `getToken()`) :
+
+1. Le token est recupere cote client avec `getToken()` (teste dans `/stats` avec le bouton "Inspecter mon token").
+2. Structure JWT : `header.payload.signature`.
+3. Algorithme de signature attendu : `RS256` (champ `alg`).
+4. Payload observe : `sub` (user id), `iss` (issuer), `iat`, `exp`, et autres claims Clerk.
+5. Modifier le payload cote client casse la signature : le backend repond `401`.
+6. Duree de vie : `exp - iat` (affichee dans le bloc d'investigation `/stats`).
+
+Network :
+
+1. Requetes Clerk visibles vers `clerk.com` / `*.clerk.accounts.dev`.
+2. Pour l'API backend, le header attendu est `Authorization: Bearer <token>`.
+3. Le token d'acces est recupere a la demande via Clerk (`getToken()`), pas stocke en clair dans `localStorage` par notre app.
+
+Preuves a fournir (captures TP) :
+
+1. /startup-tycoon/src/assets/tp13-Partie2-A.png
+2. /startup-tycoon/src/assets/tp13-Partie2-B.png
+3. /startup-tycoon/src/assets/tp13-Partie2-C.png
+
+### Lecture backend (TP13 Partie 3.2)
+
+1. Middleware qui verifie le JWT :
+`requireAuth()` dans `startup-tycoon-api/src/auth.js`.
+
+2. Pourquoi le serveur n'appelle pas Clerk a chaque requete :
+il verifie localement la signature avec la cle publique Clerk recuperee via JWKS (`createRemoteJWKSet`), avec cache automatique.
+
+3. Ou est stocke le `user_id` apres verification :
+dans `req.auth.userId` (et les claims dans `req.auth.claims`).
+
+4. Reponse sans header `Authorization` sur `/api/games/me` :
+`401` avec `{"error":"Missing Authorization header"}`.
+
+5. Validation du score :
+validation minimale de type uniquement (entier positif, bornes de duree), sans coherence gameplay (`score`, `duration`, `clicks`).
+Probleme : un client peut tricher et envoyer un score gonfle.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org/) (version LTS recommandée)
